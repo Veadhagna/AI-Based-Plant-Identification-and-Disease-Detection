@@ -1,6 +1,6 @@
-# ArogyaMitra Chatbot
+# AI-Based Plant Identification and Disease Detection
 
-ArogyaMitra is an AI-powered web application designed to support medicinal plant identification, plant disease detection, and plant-related information through a multilingual chatbot.
+An AI-powered web application designed to support medicinal plant identification, plant disease detection, and plant-related information through a multilingual chatbot.
 
 ## Features
 
