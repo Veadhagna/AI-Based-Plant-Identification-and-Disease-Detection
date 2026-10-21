@@ -1,0 +1,85 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+mac_venv/
+arogya_gpu_venv/
+
+# macOS and editor
+.DS_Store
+.vscode/
+
+# Datasets and archives
+Medicinal_plant_dataset_Train/
+Medicinal_plant_test/
+Aloe Vera Diseases Dataset for Classification of Aloe Vera Diseases Using Machine Learning/
+Comprehensive Lemon Leaf Disease Dataset for Advanced Detection and Sustainable Agriculture/
+*.zip
+
+# Trained models
+*.h5
+*.keras
+*.pt
+*.pth
+
+# Local uploads, logs, and generated artifacts
+uploads/
+*.log
+
+# Backups and old application versions
+backups/
+*.backup
+*.backup_*
+app_backup.py
+app_before_*.py
+app.py.old
+
+# Old HTML template versions
+templates/index_backup.html
+templates/index_before_auto_detect.html
+templates/index_before_disease_update.html
+
+# Local datasets and dataset archives
+*.zip
+Medicinal_plant_dataset_Train/
+Medicinal_plant_test/
+Aloe Vera Diseases Dataset for Classification of Aloe Vera Diseases Using Machine Learning/
+Comprehensive Lemon Leaf Disease Dataset for Advanced Detection and Sustainable Agriculture/
+ml_v2/data/disease_raw/
+ml_v2/data/disease_split/
+
+# Trained model files
+*.h5
+*.keras
+*.pt
+*.pth
+
+# Generated uploads, logs, and local artifacts
+uploads/
+*.log
+.DS_Store
+__pycache__/
+
+# Local backups
+app.py.backup*
+app.py.old
+app_backup.py
+app_before_*.py
+backups/
+
+# Local ML datasets and generated analysis
+ml_v2/data/
+ml_v2/results/*/evaluation/
+ml_v2/results/disease_dataset/
+ml_v2/results/error_analysis/
+ml_v2/results/gradcam_v1/
+*.csv
+*.ipynb
+*.pdf
+*.html

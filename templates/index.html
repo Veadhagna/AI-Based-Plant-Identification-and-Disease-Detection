@@ -1,0 +1,693 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArogyaMitra | Medicinal Plant Assistant</title>
+
+
+    <style>
+        :root {
+            --green: #18794e;
+            --green-dark: #105b3a;
+            --green-light: #e9f7ef;
+            --cream: #f7faf6;
+            --text: #20352a;
+            --muted: #68786e;
+            --border: #dfe9e1;
+            --white: #ffffff;
+            --danger: #b42318;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, Arial, sans-serif;
+            color: var(--text);
+            background: var(--cream);
+            line-height: 1.6;
+        }
+
+        button, input, select, textarea { font: inherit; }
+
+        button {
+            cursor: pointer;
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 16px;
+            font-weight: 600;
+            transition: background .2s, transform .2s;
+        }
+
+        button:hover { transform: translateY(-1px); }
+        button:disabled { opacity: .6; cursor: wait; transform: none; }
+
+        .topbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            color: var(--green-dark);
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .brand span { color: #a1b83d; }
+
+        .top-link {
+            text-decoration: none;
+            color: var(--green);
+            font-weight: 650;
+        }
+
+        .hero {
+            padding: 38px 20px 28px;
+            text-align: center;
+            background: linear-gradient(135deg, #e9f7ef, #f7faf6 75%);
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #d6efdf;
+            color: var(--green-dark);
+            border-radius: 30px;
+            font-size: .82rem;
+            font-weight: 700;
+        }
+
+        .hero h1 {
+            margin: 12px 0 8px;
+            font-size: clamp(1.8rem, 4vw, 2.7rem);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: 0 auto;
+            color: var(--muted);
+        }
+
+        .layout {
+            width: min(1120px, 92%);
+            margin: 28px auto 42px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(300px, .85fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 8px 28px rgba(27, 70, 43, .055);
+            min-width: 0;
+        }
+
+        .card h2 {
+            margin: 0 0 5px;
+            font-size: 1.35rem;
+        }
+
+        .subtext {
+            color: var(--muted);
+            font-size: .92rem;
+            margin: 0 0 20px;
+        }
+
+        .field { margin-bottom: 17px; }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 650;
+            font-size: .93rem;
+        }
+
+        select, input[type="file"], input[type="text"], textarea {
+            width: 100%;
+            border: 1px solid #cedbd1;
+            border-radius: 10px;
+            padding: 12px;
+            background: white;
+            color: var(--text);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 3px solid rgba(24, 121, 78, .13);
+            border-color: var(--green);
+        }
+
+        .primary {
+            background: var(--green);
+            color: white;
+        }
+
+        .primary:hover { background: var(--green-dark); }
+
+        .secondary {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .full { width: 100%; }
+
+        .preview-wrap {
+            display: none;
+            margin: 14px 0;
+            padding: 10px;
+            background: #f7faf6;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+        }
+
+        #imagePreview {
+            display: block;
+            width: 100%;
+            max-height: 260px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .status {
+            display: none;
+            margin-top: 15px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: .92rem;
+            overflow-wrap: anywhere;
+        }
+
+        .status.info { display: block; background: #edf5ff; color: #214e80; }
+        .status.success { display: block; background: #e9f7ef; color: #155b37; }
+        .status.error { display: block; background: #fff0ef; color: var(--danger); }
+
+        .results {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+        }
+
+        .results h3 { margin: 0 0 12px; color: var(--green-dark); }
+
+        .result-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #edf1ed;
+            overflow-wrap: anywhere;
+        }
+
+        .result-item:last-child { border-bottom: 0; }
+        .result-label { color: var(--muted); font-size: .84rem; }
+        .result-value { font-weight: 600; white-space: pre-wrap; }
+
+        .chat-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 470px;
+        }
+
+        .chat-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .bot-icon {
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            flex: 0 0 46px;
+            background: var(--green-light);
+            border-radius: 14px;
+            font-size: 1.5rem;
+        }
+
+        .chat-heading h2 { margin: 0; }
+        .chat-heading p { margin: 2px 0 0; color: var(--muted); font-size: .86rem; }
+
+        .chat-messages {
+            flex: 1;
+            min-height: 240px;
+            max-height: 430px;
+            overflow-y: auto;
+            padding: 12px;
+            background: #f7faf6;
+            border: 1px solid #edf1ed;
+            border-radius: 13px;
+            margin-bottom: 14px;
+        }
+
+        .message {
+            max-width: 92%;
+            padding: 10px 13px;
+            margin-bottom: 10px;
+            border-radius: 13px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: .92rem;
+        }
+
+        .message.bot {
+            background: white;
+            border: 1px solid var(--border);
+            border-top-left-radius: 4px;
+        }
+
+        .message.user {
+            margin-left: auto;
+            background: var(--green);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+
+        .chat-form input { min-width: 0; flex: 1; }
+        .chat-form button { flex-shrink: 0; }
+
+        .chat-tools {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .chat-tools button { font-size: .84rem; padding: 8px 11px; }
+
+        .hint {
+            color: var(--muted);
+            font-size: .82rem;
+            margin-top: 12px;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            font-size: .85rem;
+        }
+
+        @media (max-width: 780px) {
+            .layout { grid-template-columns: 1fr; width: min(560px, 92%); }
+            .card { padding: 19px; }
+            .chat-card { min-height: 420px; }
+            .hero { padding-top: 30px; }
+        }
+
+        @media (max-width: 420px) {
+            .topbar { padding: 13px 4%; }
+            .brand { font-size: 1.1rem; }
+            .chat-form { flex-wrap: wrap; }
+            .chat-form input { flex-basis: 100%; }
+            .chat-form button { flex: 1; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">Arogya<span>Mitra</span> 🌿</a>
+        <a class="top-link" href="/">← Home</a>
+    </header>
+
+    <section class="hero">
+        <span class="eyebrow">YOUR MEDICINAL PLANT COMPANION</span>
+        <h1>Discover Your Flora 🌱</h1>
+        <p>Explore medicinal plants, identify a plant from its leaf image, and ask questions in English, Kannada, or Hindi.</p>
+    </section>
+
+    <main class="layout">
+        <section class="card">
+            <h2>🌿 Plant Identification</h2>
+            <p class="subtext">Upload a clear leaf image to identify the plant and view available disease information.</p>
+
+            <form id="predictionForm">
+                <div class="field">
+                    <label for="plant">Select plant (optional)</label>
+                    <select id="plant" name="plant">
+                        <option value="">-- Detect plant automatically --</option>
+                        <option value="Aloevera">Aloevera</option>
+                        <option value="Basale">Basale</option>
+                        <option value="Betel">Betel</option>
+                        <option value="Castor">Castor</option>
+                        <option value="Gauva">Guava</option>
+                        <option value="Jasmine">Jasmine</option>
+                        <option value="Lemon">Lemon</option>
+                        <option value="Mango">Mango</option>
+                        <option value="Neem">Neem</option>
+                        <option value="Pappaya">Papaya</option>
+                        <option value="Rose">Rose</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="image">Upload a leaf image</label>
+                    <input id="image" name="image" type="file" accept="image/*" capture="environment" required>
+                </div>
+
+                <div class="preview-wrap" id="previewWrap">
+                    <img id="imagePreview" alt="Selected leaf image preview">
+                </div>
+
+                <button class="primary full" id="predictButton" type="submit">Identify Plant</button>
+            </form>
+
+            <div id="predictionStatus" class="status" role="status" aria-live="polite"></div>
+
+            <section id="results" class="results" aria-live="polite">
+                <h3>🌱 Identification Results</h3>
+                <div id="resultItems"></div>
+            </section>
+
+            <p class="hint">For best results, use a well-lit image with the leaf clearly visible. Predictions may not always be accurate.</p>
+        </section>
+
+        <section class="card chat-card">
+            <div class="chat-heading">
+                <div class="bot-icon">🤖</div>
+                <div>
+                    <h2>ArogyaMitra Chatbot</h2>
+                    <p>Medicinal plant information assistant</p>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+                <div class="message bot">Hello! I'm ArogyaMitra. Ask me about medicinal plant uses or plant diseases in English, ಕನ್ನಡ, or हिन्दी.</div>
+            </div>
+
+
+<div class="chat-language">
+    <label for="chatLanguage">Choose language:</label>
+    <select id="chatLanguage" aria-label="Choose chatbot language">
+        <option value="en-IN">English</option>
+        <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+        <option value="hi-IN">हिन्दी (Hindi)</option>
+    </select>
+</div>
+
+<form id="chatForm" class="chat-form">
+    <input id="chatInput" type="text"
+           placeholder="Ask about Neem, Aloe vera..."
+           autocomplete="off" required
+           aria-label="Your question">
+    <button class="primary" id="sendButton" type="submit">
+        Send
+    </button>
+</form>
+
+
+
+            <div class="chat-tools">
+                <button type="button" class="secondary" id="recordButton">🎙️ Record question</button>
+                <button type="button" class="secondary" id="stopButton" disabled>⏹ Stop recording</button>
+            </div>
+
+            <p class="hint" id="voiceStatus" role="status" aria-live="polite">Voice input requires microphone permission and a configured Groq API key.</p>
+            <p class="hint">Traditional-use information is not medical advice. Consult a qualified healthcare professional before using medicinal plants.</p>
+        </section>
+    </main>
+
+    <footer>© ArogyaMitra · Medicinal Plant Identification and Information Assistant</footer>
+
+    <script>
+        const predictionForm = document.getElementById("predictionForm");
+        const imageInput = document.getElementById("image");
+        const previewWrap = document.getElementById("previewWrap");
+        const imagePreview = document.getElementById("imagePreview");
+        const predictionStatus = document.getElementById("predictionStatus");
+        const results = document.getElementById("results");
+        const resultItems = document.getElementById("resultItems");
+        const predictButton = document.getElementById("predictButton");
+
+        function showStatus(element, message, type) {
+            element.textContent = message;
+            element.className = "status " + type;
+        }
+
+        imageInput.addEventListener("change", () => {
+            const file = imageInput.files[0];
+
+            if (!file) {
+                previewWrap.style.display = "none";
+                imagePreview.removeAttribute("src");
+                return;
+            }
+
+            if (!file.type.startsWith("image/")) {
+                imageInput.value = "";
+                previewWrap.style.display = "none";
+                showStatus(predictionStatus, "Please choose a valid image file.", "error");
+                return;
+            }
+
+            imagePreview.src = URL.createObjectURL(file);
+            previewWrap.style.display = "block";
+            predictionStatus.className = "status";
+            results.style.display = "none";
+        });
+
+        function addResult(label, value) {
+            if (value === undefined || value === null || value === "") return;
+
+            const item = document.createElement("div");
+            item.className = "result-item";
+
+            const title = document.createElement("div");
+            title.className = "result-label";
+            title.textContent = label;
+
+            const content = document.createElement("div");
+            content.className = "result-value";
+            content.textContent = String(value);
+
+            item.append(title, content);
+            resultItems.appendChild(item);
+        }
+
+        predictionForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const file = imageInput.files[0];
+            if (!file) {
+                showStatus(predictionStatus, "Please select a leaf image first.", "error");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", file);
+            formData.append("plant", document.getElementById("plant").value);
+
+            predictButton.disabled = true;
+            predictButton.textContent = "Identifying...";
+            results.style.display = "none";
+            showStatus(predictionStatus, "Analyzing your image. Please wait...", "info");
+
+            try {
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Plant prediction failed.");
+                }
+
+                resultItems.replaceChildren();
+                addResult("Selected / identified plant", data.plant);
+                addResult("Model-detected plant", data.detected_plant);
+                addResult("Plant confidence", data.plant_confidence);
+                addResult("Traditional uses", data.uses);
+                addResult("Disease status", data.disease_status);
+                addResult("Disease detected", data.disease);
+                addResult("Disease confidence", data.disease_confidence);
+                addResult("Disease details", data.disease_details);
+                addResult("Suggested care", data.disease_solution);
+
+                results.style.display = "block";
+                showStatus(predictionStatus, "Analysis complete.", "success");
+            } catch (error) {
+                showStatus(predictionStatus, error.message || "Unable to analyze the image.", "error");
+            } finally {
+                predictButton.disabled = false;
+                predictButton.textContent = "Identify Plant";
+            }
+        });
+
+        const chatForm = document.getElementById("chatForm");
+        const chatInput = document.getElementById("chatInput");
+        const chatMessages = document.getElementById("chatMessages");
+        const sendButton = document.getElementById("sendButton");
+
+        function appendMessage(message, sender) {
+            const element = document.createElement("div");
+            element.className = "message " + sender;
+            element.textContent = message;
+            chatMessages.appendChild(element);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return element;
+        }
+
+        async function askChatbot(question) {
+            appendMessage(question, "user");
+            sendButton.disabled = true;
+            sendButton.textContent = "Sending...";
+
+            const waiting = appendMessage("Thinking...", "bot");
+
+            try {
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ msg: question , language: document.getElementById("chatLanguage").value })
+                });
+
+                const data = await response.json();
+                waiting.textContent = data.response || data.error || "No response received.";
+
+                if (!response.ok && !data.response) {
+                    waiting.textContent = data.error || "Unable to get a response.";
+                }
+            } catch (error) {
+                waiting.textContent = "Could not connect to the chatbot. Please check that the Flask server is running.";
+            } finally {
+                sendButton.disabled = false;
+                sendButton.textContent = "Send";
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        chatForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const question = chatInput.value.trim();
+            if (!question) return;
+
+            chatInput.value = "";
+            await askChatbot(question);
+        });
+
+        // Optional voice input using the existing /transcribe endpoint.
+        const recordButton = document.getElementById("recordButton");
+        const stopButton = document.getElementById("stopButton");
+        const voiceStatus = document.getElementById("voiceStatus");
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let microphoneStream = null;
+
+        recordButton.addEventListener("click", async () => {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+                voiceStatus.textContent = "Voice recording is not supported in this browser.";
+                return;
+            }
+
+            try {
+                microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recordedChunks = [];
+
+                let options = {};
+                if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+                    options.mimeType = "audio/webm;codecs=opus";
+                }
+
+                mediaRecorder = new MediaRecorder(microphoneStream, options);
+
+                mediaRecorder.addEventListener("dataavailable", (event) => {
+                    if (event.data && event.data.size > 0) recordedChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener("stop", async () => {
+                    microphoneStream.getTracks().forEach(track => track.stop());
+                    microphoneStream = null;
+
+                    const audioBlob = new Blob(recordedChunks, {
+                        type: mediaRecorder.mimeType || "audio/webm"
+                    });
+
+                    if (!audioBlob.size) {
+                        voiceStatus.textContent = "No audio was recorded. Please try again.";
+                        return;
+                    }
+
+                    voiceStatus.textContent = "Transcribing your question...";
+
+                    const audioData = new FormData();
+                    const extension = audioBlob.type.includes("mp4") ? "mp4" : "webm";
+                    audioData.append("audio", audioBlob, "question." + extension);
+
+
+const selectedLanguage = document.getElementById("chatLanguage").value;
+
+const languageMap = {
+    "en-IN": "en-IN",
+    "kn-IN": "kn-IN",
+    "hi-IN": "hi-IN"
+};
+
+audioData.append("language", languageMap[selectedLanguage] || "en-IN");
+
+
+
+audioData.append("language", languageMap[selectedLanguage] || "en-IN");
+
+                    try {
+                        const response = await fetch("/transcribe", {
+                            method: "POST",
+                            body: audioData
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(data.error || "Transcription failed.");
+                        }
+
+                        chatInput.value = data.text || "";
+                        voiceStatus.textContent = data.text
+                            ? "Transcription complete. Review your question and press Send."
+                            : "No speech was detected. Please try again.";
+                        chatInput.focus();
+                    } catch (error) {
+                        voiceStatus.textContent = error.message || "Voice transcription failed.";
+                    }
+                });
+
+                mediaRecorder.start();
+                recordButton.disabled = true;
+                stopButton.disabled = false;
+                voiceStatus.textContent = "Recording... Speak clearly, then press Stop recording.";
+            } catch (error) {
+                voiceStatus.textContent = "Could not access your microphone. Allow microphone permission and try again.";
+            }
+        });
+
+        stopButton.addEventListener("click", () => {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+                recordButton.disabled = false;
+                stopButton.disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
